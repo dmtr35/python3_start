@@ -1,6 +1,5 @@
-# name = input("your name: \n")
-# print(name)
-# print(dir(name))
+name = input("your name: \n")
+print(name)
 
 # ====================================
 

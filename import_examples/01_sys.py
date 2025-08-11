@@ -17,6 +17,8 @@ print("Пути поиска модулей:", sys.path)                    # С
 
 sys.stdout.write("stdout: обычный вывод\n")                # Вывод в стандартный поток (как print).
 sys.stderr.write("stderr: сообщение об ошибке\n")          # Вывод в поток ошибок.
+print("error33", file=sys.stderr)
+print("error33", file=sys.stdout)
 
 s = "hello"
 print("Размер объекта в памяти:", sys.getsizeof(s), "байт") # Размер объекта в байтах.
