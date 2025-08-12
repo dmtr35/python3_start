@@ -22,9 +22,8 @@ print(path_to_file)
 print(os.stat(path_to_file))                                            # Информация о файле: размер, дата изменения и т.д.
 print(os.path.getsize(path_to_file))                                    # Информация о файле: размер
 
-print(os.path.basename(path_to_file))                                   # Возвращает имя последней папки или файла из пути.
-print(os.path.dirname(path_to_file))                                     # Возвращает имя родительской папки.
-
+print(os.path.basename(path_to_file))                                   # Возвращает имя последней папки или файла из пути. (Path.name))
+print(os.path.dirname(path_to_file))                                     # Возвращает имя родительской папки. (Path.parent)
 
 # ------------------------------------------------
 # print(os.path.expanduser("~/.vimrc"))                                   # заменяет начальный символ ~ в пути на путь к домашнему каталогу -> /home/dm/.vimrc
