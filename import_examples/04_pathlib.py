@@ -55,3 +55,10 @@ for item in path.rglob("*"):
     print(item)
     if item.is_dir():
         print(f"{item} is a directory")
+
+
+
+vpn_dir = Path("/etc/config/ovpn")                                  # glob ищет файлы и директории по шаблону
+vpn_files = list(vpn_dir.glob("*.ovpn"))
+for f in vpn_files:
+    print(f)
