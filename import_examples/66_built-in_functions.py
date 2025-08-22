@@ -111,23 +111,83 @@
 # print(MyClass.class_method())  # Вывод: This is I am a class variable
 
 # Задание 1 и 2
-class Person:
-    species = "Homo sapiens"
+# class Person:
+#     species = "Homo sapiens"
 
-    @classmethod
-    def get_species(cls):
-        return cls.species
+#     @classmethod
+#     def get_species(cls):
+#         return cls.species
 
-    @classmethod
-    def create_person(cls, name):
-        return cls(name)
+#     @classmethod
+#     def create_person(cls, name):
+#         return cls(name)
 
-    def __init__(self, name):
-        self.name = name
+#     def __init__(self, name):
+#         self.name = name
 
-# Проверка
-print(Person.get_species())  # Вывод: Homo sapiens
-person = Person.create_person("Alice")
-print(person.name)  # Вывод: Alice
+# # Проверка
+# print(Person.get_species())  # Вывод: Homo sapiens
+# person = Person.create_person("Alice")
+# print(person.name)  # Вывод: Alice
 # ====================================================================================
+# !!! удалена в python3
+# Функция cmp() сравнивает два объекта x и y и возвращает целое число в зависимости от результата сравнения
+# Отрицательное число, если x < y.
+# Ноль, если x == y.
+# Положительное число, если x > y.
+
+# print(cmp(1, 2))    # Вывод: -1 (1 < 2)
+# print(cmp(3, 3))    # Вывод: 0 (3 == 3)
+# print(cmp(5, 4))    # Вывод: 1 (5 > 4)
+# print(cmp("a", "b")) # Вывод: -1 (по лексикографическому порядку)
+# ====================================================================================
+# Функция compile() компилирует исходный код Python в объект кода
+# compile(source, filename, mode, flags=0, dont_inherit=False)
+
+# Пример:
+# Компиляция и выполнение выражения
+# code_str = "2 + 3"
+# code_obj = compile(code_str, '<string>', 'eval')
+# result = eval(code_obj)
+# print(result)  # Вывод: 5
+
+# # Компиляция и выполнение блока кода
+# code_str = '''
+# def greet():
+#     print("Hello, world!")
+# greet()
+# '''
+# code_obj = compile(code_str, '<string>', 'exec')
+# exec(code_obj)  # Вывод: Hello, world!
+# ====================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
