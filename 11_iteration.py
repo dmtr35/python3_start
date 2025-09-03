@@ -1,22 +1,22 @@
 import random
 # iteration
-# вычислимые последовательности, обьект должен иметь встроеный метод __next 
+# вычислимые последовательности, обьект должен иметь встроеный метод __next__ 
 # enumerate
-# e = enumerate("ERW")
-# print(list(e))                                                      # [(0, 'E'), (1, 'R'), (2, 'W')]
-# print(list(e))                                                      # []
+e = enumerate("ERW")
+print(list(e))                                                      # [(0, 'E'), (1, 'R'), (2, 'W')]
+print(list(e))                                                      # []
 
-# e = enumerate("ASD")
-# print(next(e))                                                      # (0, 'A')
-# print(next(e))                                                      # (1, 'S')
-# print(next(e))                                                      # (2, 'D')
-# print(next(e))                                                      # StopIteration
+e = enumerate("ASD")
+print(next(e))                                                      # (0, 'A')
+print(next(e))                                                      # (1, 'S')
+print(next(e))                                                      # (2, 'D')
+print(next(e))                                                      # StopIteration
 
-# e = enumerate("ASD")
-# print(e.__next__())                                                 # (0, 'A')
-# print(e.__next__())                                                 # (1, 'S')
-# print(e.__next__())                                                 # (2, 'D')
-# print(e.__next__())                                                 # StopIteration
+e = enumerate("ASD")
+print(e.__next__())                                                 # (0, 'A')
+print(e.__next__())                                                 # (1, 'S')
+print(e.__next__())                                                 # (2, 'D')
+print(e.__next__())                                                 # StopIteration
 # --------------------------------------------------------------------------------------
 #zip
 # z = zip("ASD", range(1,4))
