@@ -38,7 +38,12 @@ for key in sorted(transitions.keys()):                                  # Для
     print(key, transitions[key])
 
 
+# ==================================================================
+for row, key in enumerate(data):
+    print(row, key, data[key])
 
+for row, (key, value) in enumerate(data.items()):
+    print(row, key, value)
 
 
 
