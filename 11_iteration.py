@@ -2,21 +2,22 @@ import random
 # iteration
 # вычислимые последовательности, обьект должен иметь встроеный метод __next__ 
 # enumerate
-e = enumerate("ERW")
-print(list(e))                                                      # [(0, 'E'), (1, 'R'), (2, 'W')]
-print(list(e))                                                      # []
 
-e = enumerate("ASD")
-print(next(e))                                                      # (0, 'A')
-print(next(e))                                                      # (1, 'S')
-print(next(e))                                                      # (2, 'D')
-print(next(e))                                                      # StopIteration
+# e = enumerate("ERW")
+# print(list(e))                                                      # [(0, 'E'), (1, 'R'), (2, 'W')]
+# print(list(e))                                                      # []
 
-e = enumerate("ASD")
-print(e.__next__())                                                 # (0, 'A')
-print(e.__next__())                                                 # (1, 'S')
-print(e.__next__())                                                 # (2, 'D')
-print(e.__next__())                                                 # StopIteration
+# e = enumerate("ASD")
+# print(next(e))                                                      # (0, 'A')
+# print(next(e))                                                      # (1, 'S')
+# print(next(e))                                                      # (2, 'D')
+# print(next(e))                                                      # StopIteration
+
+# e = enumerate("ASD")
+# print(e.__next__())                                                 # (0, 'A')
+# print(e.__next__())                                                 # (1, 'S')
+# print(e.__next__())                                                 # (2, 'D')
+# print(e.__next__())                                                 # StopIteration
 # --------------------------------------------------------------------------------------
 #zip
 # z = zip("ASD", range(1,4))
@@ -63,7 +64,7 @@ print(e.__next__())                                                 # StopIterat
 
 # def gen(n):
 #     for i in range(n):
-#         yield i*2+1
+#         yield i+1
 # res = gen(3)
 # print(res)                                                              # вернет генератор, который можно будет использовать
 # print(next(res))                                                        # 1
@@ -83,28 +84,31 @@ print(e.__next__())                                                 # StopIterat
 # Параметрические генераторы. передаем параметры для yield (первый запуск next(p) как бы "инициализация", дальше передаем параметры)
 # def pgen(x):
 #     res = yield x
+#     print("res1:", res)
 #     res = yield res + x
+#     print("res2:", res)
 #     res = yield res * x
 # p = pgen(10)
+# print(p)
 # print(next(p))
 # print(p.send(100))                                  # 100 отправляем в res
 # print(p.send(2))                                    # 2 отправляем в res
 # --------------------------------------------------------------------------------------
 # пример, return из итератора и yield from
-# def gen(x):
-#     yield from x
-#     return len(x)
+def gen(x):
+    yield from x
+    return len(x)
 
-# def runner(g):
-#     res = yield from g
-#     print("Result", res)
+def runner(g):
+    res = yield from g
+    print("Result", res)
 
-# g = gen("qwe")
-# res = runner(g)
-# print(next(res))                                                 # q
-# print(next(res))                                                 # w
-# print(next(res))                                                 # e
-# print(next(res))                                                 # Result 3
+g = gen("qwe")
+res = runner(g)
+print(next(res))                                                 # q
+print(next(res))                                                 # w
+print(next(res))                                                 # e
+print(next(res))                                                 # Result 3
 # ======================================================================================
 # ======================================================================================
 # ======================================================================================
