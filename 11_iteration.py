@@ -94,23 +94,88 @@ import random
 # print(p.send(100))                                  # 100 отправляем в res
 # print(p.send(2))                                    # 2 отправляем в res
 # --------------------------------------------------------------------------------------
-# пример, return из итератора и yield from
-def gen(x):
-    yield from x
-    return len(x)
+# # пример, return из итератора и yield from
+# def gen(x):
+#     yield from x
+#     return len(x)
 
-def runner(g):
-    res = yield from g
-    print("Result", res)
+# def runner(g):
+#     res = yield from g
+#     print("Result", res)
 
-g = gen("qwe")
-res = runner(g)
-print(next(res))                                                 # q
-print(next(res))                                                 # w
-print(next(res))                                                 # e
-print(next(res))                                                 # Result 3
+# g = gen("qwe")
+# res = runner(g)
+# print(next(res))                                                 # q
+# print(next(res))                                                 # w
+# print(next(res))                                                 # e
+# print(next(res))                                                 # Result 3
 # ======================================================================================
+# def fun():
+#     yield "One"
+#     yield "Two"
+# def run():
+#     yield from fun()
+#     yield from fun()
+# for i in run():
+#     print(i)
 # ======================================================================================
+# def subr(n):
+#     yield f"One: {n}"
+#     yield f"Two: {n}"
+#     return f"Done: {n}"
+
+# def task():
+#     for i in range(3):
+#         result = yield from subr(i)
+#         yield result
+#     return "*END*"
+
+# core = task()
+# try:
+#     while (res := next(core)):
+#         print(res)
+# except StopIteration as E:
+#     print(E.value)
+# ======================================================================================
+# def task(initial):
+#     value = initial
+#     while True:
+#         value = yield f"<{value * 2}>"
+
+# core = task(100500)
+# print(f"Start: {next(core)}")
+# for i in range(5):
+#     print(core.send(i + 1))
+# ======================================================================================
+# def subr():
+#     x = yield "Wait for x"
+#     y = yield f"Wait for y ({x=})"
+#     return x, y
+
+# def task():
+#     while True:
+#         value = yield from subr()
+#         _ = yield value
+
+# core = task()
+# print(next(core))
+# for i in range(8):
+#     print(core.send(i))
+# ======================================================================================
+def mult():
+    x = yield "Give me X"
+    y = yield "Give me Y"
+    return x * y
+def task():
+    while True:
+        res = yield from mult()
+        res2 = yield res
+        print("Got", res2)
+core = task()
+next(core)
+for i in range(1, 10):
+    print(core.send(i))
+
 # ======================================================================================
 # https://docs.python.org/3/library/itertools.html
 from itertools import *
