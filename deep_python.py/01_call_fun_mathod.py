@@ -46,16 +46,13 @@ __import__("__main__").f_obj.f(48)
 
 # 8. Через operator хелперы
 # Модуль operator даёт удобные фабрики для вызова:
-# А КАК ВЫЗВАТЬ ФУКЦИЮ? __import__("operator").methodcaller('f', 49)() ?
 __import__("operator").methodcaller('f', 49)(f_obj)
 
 # 9. Через functools.partial
 # Создаём обёртку, которая уже знает аргументы:
 __import__("functools").partial(f, 50)()
-# А как метод вызвать?
 # >>> __import__("functools").partial(f_obj.f, 50)
 # functools.partial(<bound method F.f of <__main__.F object at 0x7f2e0fc226c0>>, 50)
-# 
 
 # 10. Через types.FunctionType
 # Функцию можно «создать заново» из её кода и вызвать:
@@ -72,7 +69,7 @@ f_obj.__getattribute__('f')(53)
 
 # 14. inspect.getattr_static
 # inspect умеет доставать атрибуты без магии привязки. Иногда полезно:
-
+__import__("inspect").getattr_static(f_obj, 'f')(f_obj, 55)
 
 # 15. operator.attrgetter
 # через attrgetter:
@@ -97,7 +94,7 @@ getattr(f_obj, 'temp')(61)
 
 # 20. Через __builtins__
 # Функции можно вытаскивать и из пространства имён встроенных:
-
+__import__("builtins").eval("f(62)")
 
 
 
