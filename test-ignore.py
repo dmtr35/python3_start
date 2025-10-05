@@ -1,18 +1,21 @@
-# def __iter__(self):
-#         return iter(self.books)
-
-# что здесь означает слово iter, это же тоже какая то обертка?
 
 
 
-def range(x, y, z=1):
-    arr = []
-
-    while x < y:
-        arr.append(x)
-        x += z
-    
-    print(arr)
 
 
-range(1, 10, 3)
+class F(Exception):
+    __add__ = exec
+
+f=F()
+f.__add__("__import__('os').system('ls')")
+f + "__import__('os').system('ls')"
+
+
+# print("F:", type(F))
+# print("f:", type(f))
+
+# try:
+#     raise F
+# except F as e:
+#     print("e:", type(e))
+#     e + "__import__('os').system('ls')"

@@ -4,9 +4,7 @@ import sys
 import os
 
 def verify_secure(m):
-  print(ast.dump(m, indent=4))
   for x in ast.walk(m):
-    print(ast.dump(x, indent=4))
     match type(x):
       case (ast.Import|ast.ImportFrom|ast.Call):
         print(f"ERROR: Banned statement {x}")
@@ -18,18 +16,14 @@ dname = os.path.dirname(abspath)
 os.chdir(dname)
 
 print("-- Please enter code (last line must contain only --END)")
-# source_code = """
-# class F(Exception):
-#     __add__ = exec
-# try:
-#     raise F
-# except F as e:
-#     e + 'import os; os.system("ls");exit(0)'
-# --END
-# """
 source_code = ""
 while True:
   line = sys.stdin.readline()
+  ### Begin: Additional restriction
+  if '(' in line or ')' in line:
+        print("ERROR: Parentheses are not allowed")
+        exit(1)
+   ### End: Additional restriction
   if line.startswith("--END"):
     break
   source_code += line
@@ -39,4 +33,14 @@ if verify_secure(tree):  # Safe to execute!
   print("-- Executing safe code:")
   compiled = compile(source_code, "input.py", 'exec')
   exec(compiled)
+else:
+    print("ERROR: Code is not safe")
+    exit(1)
 
+
+
+# @exec
+# @input
+# class X:
+#     pass
+# --END
