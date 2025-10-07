@@ -36,14 +36,15 @@ transitions = {
 
 for key in sorted(transitions.keys()):                                  # Для сортировки по ключам
     print(key, transitions[key])
-
+# or
+s = dict(sorted(transitions.items(), key=lambda x: x[1]))
 
 # ==================================================================
-for row, key in enumerate(data):
-    print(row, key, data[key])
+# for row, key in enumerate(data):
+#     print(row, key, data[key])
 
-for row, (key, value) in enumerate(data.items()):
-    print(row, key, value)
+# for row, (key, value) in enumerate(data.items()):
+#     print(row, key, value)
 
 
 
