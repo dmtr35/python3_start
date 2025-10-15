@@ -10,8 +10,6 @@ def execute(cmd):
     cmd = cmd.strip()
     if not cmd:
         return
-    print(shlex.split(cmd))
-    print(shlex.split(cmd))
     # check_output - Выполнить команду с аргументами и вернуть ее вывод.
     # shlex.split() - разделяет строку команды так же, как это делает оболочка (bash) — она сохраняет кавычки вместе и понимает экранированные последовательности
     output = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)
@@ -22,7 +20,7 @@ class NetCat:
         self.args = args
         self.buffer = buffer
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)                       # можно перезапускать сервер без ожидания
 
     def run(self):
         if self.args.listen:
@@ -67,7 +65,7 @@ class NetCat:
         if self.args.execute:
             output = execute(self.args.execute)
             client_socket.send(output.encode())
-            
+
         elif self.args.upload:
             file_buffer = b''
             while True:
@@ -80,7 +78,7 @@ class NetCat:
                 f.write(file_buffer)
             message = f'Saved file {self.args.upload}'
             client_socket.send(message.encode())
-            
+
         elif self.args.command:
             cmd_buffer = b''
             while True:
@@ -97,7 +95,8 @@ class NetCat:
                     self.socket.close()
                     sys.exit()
 
-if __name__ == '__main__':
+
+def main():
     parser = argparse.ArgumentParser(
         description='BHP Net Tool',
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -118,13 +117,19 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--target', default='192.168.1.203', help='specified IP')
     parser.add_argument('-u', '--upload', help='upload file')
     args = parser.parse_args()
-    print("here: ", parser.parse_args())
 
     if args.listen:
         buffer = ''
     else:
         buffer = sys.stdin.read()
 
+    print("buffer : ", buffer.encode())
+    print("args : ", args)
     nc = NetCat(args, buffer.encode())
     nc.run()
+
+
+if __name__ == '__main__':
+    main()
+    
 
