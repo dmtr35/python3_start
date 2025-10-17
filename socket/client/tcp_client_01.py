@@ -21,13 +21,13 @@ class Client:
                 response = ''
                 while recv_len:
                     data = self.socket.recv(4096)
-                    print("len(data): ", len(data))
                     recv_len = len(data)
                     response += data.decode()
                     if recv_len < 4096:
                         break
                 if response:
-                    print("response: ", response)
+                    # print("response: ", response)
+                    print(response)
                     buffer = input('> ')
                     buffer += '\n'
                     self.socket.send(buffer.encode())

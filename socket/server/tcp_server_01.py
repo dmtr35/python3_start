@@ -10,8 +10,17 @@ def execute(cmd):
     cmd = cmd.strip()
     if not cmd:
         return
-    output = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)
-    return output.decode()
+    try:
+    proc = subprocess.run(shlex.split(cmd),
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT, 
+                            text=True,
+                            check=False)
+    output = proc.stdout
+    print("returncode =", proc.returncode)
+    print("----OUTPUT----")
+    print(output)
+    return output
 
 class NetCat:
     def __init__(self, args):
@@ -47,14 +56,17 @@ class NetCat:
 
         elif self.args.command:
             cmd_buffer = b''
+            client_socket.send(b'BHP #> ')
             while True:
                 try:
-                    client_socket.send(b'BHP #> ')
                     while '\n' not in cmd_buffer.decode():
                         cmd_buffer += client_socket.recv(64)
                     response = execute(cmd_buffer.decode())
                     if response:
                         client_socket.send(response.encode())
+                    elif response == None:
+                        client_socket.send(b'None')
+
                     cmd_buffer = b''
                 except Exception as e:
                     print(f'server killed {e}')
