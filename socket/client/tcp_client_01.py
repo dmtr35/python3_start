@@ -1,20 +1,23 @@
+#!/bin/python3
+
 import argparse
 import socket
 import sys
 import textwrap
 
-# отправляем данные
+marker = "[SERVER_DONE]"
+
 class Client:
     def __init__(self, args, buffer):
         self.args = args
         self.buffer = buffer
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    def send(self):
+    def sendall(self):
         self.socket.connect((self.args.target, self.args.port))
         if self.buffer:
-            print("here, buffer send")
-            self.socket.send(self.buffer)
+            self.socket.sendall(self.buffer)
+            self.socket.shutdown(socket.SHUT_WR)
         try:
             while True:
                 recv_len = 1
@@ -25,12 +28,16 @@ class Client:
                     response += data.decode()
                     if recv_len < 4096:
                         break
-                if response:
-                    # print("response: ", response)
+                if response.endswith(marker):
+                    print('> ')
+                    print(response[:-len(marker)])
+                    self.socket.close()
+                    sys.exit()
+                elif response:
                     print(response)
                     buffer = input('> ')
                     buffer += '\n'
-                    self.socket.send(buffer.encode())
+                    self.socket.sendall(buffer.encode())
         except KeyboardInterrupt:
             print('User terminated')
             self.socket.close()
@@ -51,7 +58,7 @@ def main():
     buffer = sys.stdin.read().encode()
 
     cl = Client(args, buffer)
-    cl.send()
+    cl.sendall()
 
 if __name__ in '__main__':
     main()

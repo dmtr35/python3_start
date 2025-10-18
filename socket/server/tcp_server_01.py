@@ -1,3 +1,5 @@
+#!/bin/python3
+
 import argparse
 import socket
 import shlex
@@ -6,21 +8,17 @@ import sys
 import textwrap
 import threading
 
+marker = "[SERVER_DONE]"
+
 def execute(cmd):
     cmd = cmd.strip()
     if not cmd:
         return
     try:
-    proc = subprocess.run(shlex.split(cmd),
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT, 
-                            text=True,
-                            check=False)
-    output = proc.stdout
-    print("returncode =", proc.returncode)
-    print("----OUTPUT----")
-    print(output)
-    return output
+        proc = subprocess.run(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, check=False)
+        return proc.stdout or None
+    except FileNotFoundError:
+        return f"command not found: {cmd}"
 
 class NetCat:
     def __init__(self, args):
@@ -39,7 +37,10 @@ class NetCat:
     def handle(self, client_socket):
         if self.args.execute:
             output = execute(self.args.execute)
-            client_socket.send(output.encode())
+            output += marker
+            client_socket.sendall(output.encode())
+            client_socket.shutdown(socket.SHUT_WR)
+            client_socket.close()
 
         elif self.args.upload:
             file_buffer = b''
@@ -52,47 +53,52 @@ class NetCat:
             with open(self.args.upload, 'wb') as f:
                 f.write(file_buffer)
             message = f'Saved file {self.args.upload}'
-            client_socket.send(message.encode())
+            message += marker
+            client_socket.sendall(message.encode())
+            client_socket.close()
 
         elif self.args.command:
             cmd_buffer = b''
-            client_socket.send(b'BHP #> ')
+            client_socket.sendall(b'BHP #> ')
             while True:
                 try:
                     while '\n' not in cmd_buffer.decode():
                         cmd_buffer += client_socket.recv(64)
                     response = execute(cmd_buffer.decode())
                     if response:
-                        client_socket.send(response.encode())
+                        client_socket.sendall(response.encode())
                     elif response == None:
-                        client_socket.send(b'None')
-
+                        client_socket.sendall(b'None')
                     cmd_buffer = b''
                 except Exception as e:
                     print(f'server killed {e}')
                     self.socket.close()
                     sys.exit()
 
-
 def main():
     parser = argparse.ArgumentParser(
         description='BHP Net Tool',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent('''Example:
-            netcat.py -t 192.168.1.108 -p 5555 -l -c            # командная оболочка
-            netcat.py -t 192.168.1.108 -p 5555 -l -u=mytext.txt
+            # командная оболочка
+            netcat.py -t 192.168.1.108 -p 9999 -c
+
             # загружаем в файл
-            netcat.py -t 192.168.1.108 -p 5555 -l -e=\"cat /etc/passwd"
+            netcat.py -t 192.168.1.108 -p 9999 -u=mytext.txt
+
             # выполняем команду
-            echo 'ABC' | .netcat.py -t 192.168.1.108 -p 135
-            # шлем текст на порт сервера 135
-            netcat.py -t 192.168.1.108 -p 5555                  # соединяемся с сервером
+            netcat.py -t 192.168.1.108 -p 9999 -e=\"cat /etc/passwd"
+
+            # шлем текст на порт сервера
+            echo 'ABC' | .netcat.py -t 192.168.2.100 -p 9999
+            
+            # соединяемся с сервером
+            netcat.py -t 192.168.1.108 -p 9999
         '''))
+    parser.add_argument('-t', '--target', default='192.168.2.100', help='specified IP')
+    parser.add_argument('-p', '--port', type=int, default=9999, help='specified PORT')
     parser.add_argument('-c', '--command', action='store_true', help='command_shell')
     parser.add_argument('-e', '--execute', help='execute specified command')
-    parser.add_argument('-l', '--listen', action='store_true', help='listen')
-    parser.add_argument('-p', '--port', type=int, default=9999, help='specified PORT')
-    parser.add_argument('-t', '--target', default='192.168.2.100', help='specified IP')
     parser.add_argument('-u', '--upload', help='upload file')
     args = parser.parse_args()
 
