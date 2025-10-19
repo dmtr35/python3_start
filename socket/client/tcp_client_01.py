@@ -4,6 +4,7 @@ import argparse
 import socket
 import sys
 import textwrap
+from proxy import proxy_handler
 
 marker = "[SERVER_DONE]"
 
@@ -14,7 +15,8 @@ class Client:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def sendall(self):
-        self.socket.connect((self.args.target, self.args.port))
+        # self.socket.connect((self.args.target, self.args.port))
+        proxy_handler(self.socket, self.args.target, self.args.port, True)
         if self.buffer:
             self.socket.sendall(self.buffer)
             self.socket.shutdown(socket.SHUT_WR)
@@ -44,7 +46,7 @@ class Client:
             sys.exit()
 
 
-def main():
+def start_tcp_client():
     parser = argparse.ArgumentParser(
         description='client tool',
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -61,7 +63,7 @@ def main():
     cl.sendall()
 
 if __name__ in '__main__':
-    main()
+    start_tcp_client()
 
 
 
