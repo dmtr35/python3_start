@@ -9,6 +9,7 @@ import textwrap
 import threading
 
 marker = "[SERVER_DONE]"
+BHP = b"BHP #> "
 
 def execute(cmd):
     cmd = cmd.strip()
@@ -30,11 +31,12 @@ class NetCat:
         self.socket.bind((self.args.target, self.args.port))
         self.socket.listen(5)
         while True:
-            client_socket, _ = self.socket.accept()
-            client_thread = threading.Thread(target=self.handle, args=(client_socket,))
+            client_socket, addr = self.socket.accept()
+            print(f'> Received incoming connection from {addr[0]}:{addr[1]}')
+            client_thread = threading.Thread(target=self.handle, args=(client_socket, addr))
             client_thread.start()
 
-    def handle(self, client_socket):
+    def handle(self, client_socket, addr):
         if self.args.execute:
             output = execute(self.args.execute)
             output += marker
@@ -59,16 +61,21 @@ class NetCat:
 
         elif self.args.command:
             cmd_buffer = b''
-            client_socket.sendall(b'BHP #> ')
+            client_socket.sendall(BHP)
+            print(f'[<==] Sending {len(BHP)} bytes to {addr[0]}:{addr[1]}')
             while True:
                 try:
                     while '\n' not in cmd_buffer.decode():
                         cmd_buffer += client_socket.recv(64)
+                    if len(cmd_buffer):
+                        print(f'[==>] Received {len(cmd_buffer)} bytes to {addr[0]}:{addr[1]}')
                     response = execute(cmd_buffer.decode())
                     if response:
                         client_socket.sendall(response.encode())
+                        print(f"[<==] Sending {len(response)} bytes to localhost.")
                     elif response == None:
                         client_socket.sendall(b'None')
+                        print(f'[==>] Received "None" to {addr[0]}:{addr[1]}')
                     cmd_buffer = b''
                 except Exception as e:
                     print(f'server killed {e}')
