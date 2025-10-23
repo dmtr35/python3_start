@@ -47,7 +47,7 @@ class NetCat:
         elif self.args.upload:
             file_buffer = b''
             while True:
-                data = client_socket.recv(4096)
+                data = client_socket.recv(7)
                 if data:
                     file_buffer += data
                 else:

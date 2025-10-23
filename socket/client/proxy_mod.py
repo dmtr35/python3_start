@@ -26,7 +26,7 @@ def hexdump(src, length=16, show=True):
 
 def receive_from(connection):
     buffer = b''
-    # connection.settimeout(5)
+    connection.settimeout(1)
     try:
         while True:
             data = connection.recv(4096)
@@ -48,14 +48,13 @@ def response_handler(buffer):
     return buffer
 
 
-def proxy_handler(client_socket, remote_host, remote_port, receive_first):
+def proxy_handler(client_socket, remote_host, remote_port):
     remote_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     remote_socket.connect((remote_host, remote_port))
 
     remote_buffer = b''
-    if receive_first:
-        remote_buffer = receive_from(remote_socket)
-        hexdump(remote_buffer)
+    remote_buffer = receive_from(remote_socket)
+    hexdump(remote_buffer)
 
     remote_buffer = response_handler(remote_buffer)
     if len(remote_buffer):
@@ -82,14 +81,8 @@ def proxy_handler(client_socket, remote_host, remote_port, receive_first):
             client_socket.send(remote_buffer)
             print(f"[<==] Sent to localhost.")
 
-        # if not len(local_buffer) or not len(remote_buffer):
-        #     client_socket.close()
-        #     remote_socket.close()
-        #     print("[*] No more data. Closing connections")
-        #     break
 
-
-def server_loop(local_host, local_port, remote_host, remote_port, receive_first):
+def server_loop(local_host, local_port, remote_host, remote_port):
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
@@ -110,12 +103,12 @@ def server_loop(local_host, local_port, remote_host, remote_port, receive_first)
         # создаем поток для взаимодействия с удаленным сервером
         proxy_thread = threading.Thread(
             target=proxy_handler,
-            args=(client_socket, remote_host, remote_port, receive_first))
+            args=(client_socket, remote_host, remote_port))
         proxy_thread.start()
 
 def main():
     print(sys.argv)
-    if len(sys.argv[1:]) != 5:
+    if len(sys.argv[1:]) != 4:
         print('Usage: ./proxy.py [localhost] [localport]', end='')
         print('[remotehost] [remoteport] [receive_first]')
         print('Example: ./proxy.py 127.0.0.1 9000 10.12.132.1 9000 True')
@@ -124,9 +117,8 @@ def main():
     local_port = int(sys.argv[2])
     remote_host = sys.argv[3]
     remote_port = int(sys.argv[4])
-    receive_first = sys.argv[5].lower() == 'true'
 
-    server_loop(local_host, local_port, remote_host, remote_port, receive_first)
+    server_loop(local_host, local_port, remote_host, remote_port)
 
 if __name__ in '__main__':
     main()

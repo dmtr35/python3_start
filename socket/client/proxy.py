@@ -26,7 +26,7 @@ def hexdump(src, length=16, show=True):
 
 def receive_from(connection):
     buffer = b''
-    connection.settimeout(5)
+    connection.settimeout(1)
     try:
         while True:
             data = connection.recv(4096)
@@ -82,11 +82,11 @@ def proxy_handler(client_socket, remote_host, remote_port, receive_first):
             client_socket.send(remote_buffer)
             print(f"[<==] Sent to localhost.")
 
-        if not len(local_buffer) or not len(remote_buffer):
-            client_socket.close()
-            remote_socket.close()
-            print("[*] No more data. Closing connections")
-            break
+        # if not len(local_buffer) or not len(remote_buffer):
+        #     client_socket.close()
+        #     remote_socket.close()
+        #     print("[*] No more data. Closing connections")
+        #     break
 
 
 def server_loop(local_host, local_port, remote_host, remote_port, receive_first):
