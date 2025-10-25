@@ -1,3 +1,5 @@
+#!/bin/python3
+
 import sys
 import socket
 import threading
@@ -111,7 +113,7 @@ def main():
     if len(sys.argv[1:]) != 4:
         print('Usage: ./proxy.py [localhost] [localport]', end='')
         print('[remotehost] [remoteport] [receive_first]')
-        print('Example: ./proxy.py 127.0.0.1 9000 10.12.132.1 9000 True')
+        print('Example: ./proxy.py 127.0.0.1 9000 10.12.132.1 9000')
         sys.exit(0)
     local_host = sys.argv[1]
     local_port = int(sys.argv[2])
