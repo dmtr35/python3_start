@@ -29,9 +29,9 @@ def ssh_command(ip, port, user, passwd, command):
 if __name__ == '__main__':
     import getpass
     user = 'dm'
-    password = '1'
-    ip = '192.168.2.101'
-    port = 22
+    password = 'Ad4416013ad!'
+    ip = '192.168.2.100'
+    port = 2222
     ssh_command(ip, port, user, password, 'ClientConnected')
     # user = getpass.getuser()
     # password = getpass.getpass()

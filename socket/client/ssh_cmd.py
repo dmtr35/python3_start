@@ -2,8 +2,8 @@ import paramiko
 
 def ssh_command(ip, port, user, passwd, cmd):
     client = paramiko.SSHClient()
-    # client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    client.load_system_host_keys()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    # client.load_system_host_keys()
     client.connect(ip, port=port, username=user, password=passwd)
 
     _, stdout, stderr = client.exec_command(cmd)
