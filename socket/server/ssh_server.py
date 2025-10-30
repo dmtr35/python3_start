@@ -10,7 +10,7 @@ CWD = os.path.dirname(os.path.realpath(__file__))
 print(os.path.join(CWD, 'test_rsa.key'))
 HOSTKEY = paramiko.RSAKey(filename=os.path.join(CWD, 'test_rsa.key'))
 
-class Server (paramiko.ServerInterface):
+class Server(paramiko.ServerInterface):
     def __init__(self):
         self.event = threading.Event()
 
@@ -20,7 +20,7 @@ class Server (paramiko.ServerInterface):
         return paramiko.OPEN_FAILED_ADMINISTRATIVELY_PROHIBITED
 
     def check_auth_password(self, username, password):
-        if (username == 'dm') and (password == '1!'):
+        if (username == 'test') and (password == 'test'):
             return paramiko.AUTH_SUCCESSFUL
 
 if __name__ == '__main__':
@@ -30,7 +30,7 @@ if __name__ == '__main__':
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind((server, ssh_port))
-        sock.listen(100)
+        sock.listen(5)
         print('[+] Listening for connection ...')
         client, addr = sock.accept()
     except Exception as e:
@@ -39,6 +39,7 @@ if __name__ == '__main__':
     else:
         print('[+] Got a connection!', client, addr)
 
+    # 
     bhSession = paramiko.Transport(client)
     bhSession.add_server_key(HOSTKEY)
     server = Server()
@@ -51,18 +52,22 @@ if __name__ == '__main__':
 
     print('[+] Authenticated!')
     print(chan.recv(1024))
-    chan.send('Welcome to bh_ssh')
+    chan.sendall('Welcome to bh_ssh')
     try:
         while True:
             command= input("Enter command: ")
-            if command != 'exit':
-                chan.send(command)
+            if not command:
+                continue
+            elif command != 'exit':
+                chan.sendall(command)
                 r = chan.recv(8192)
                 print(r.decode())
             else:
-                chan.send('exit')
+                chan.sendall('exit')
                 print('exiting')
                 bhSession.close()
                 break
     except KeyboardInterrupt:
+        chan.sendall('exit')
+        print('exiting')
         bhSession.close()
