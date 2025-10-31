@@ -61,7 +61,9 @@ if __name__ == '__main__':
             elif command != 'exit':
                 chan.sendall(command)
                 r = chan.recv(8192)
-                print(r.decode())
+                # print(r.decode('utf-8'))      # результат из Linux/WSL
+                print(r.decode('cp866'))        # результат из консоль windows
+                # print(r.decode('cp1251'))       # результат из PowerShell
             else:
                 chan.sendall('exit')
                 print('exiting')
@@ -71,3 +73,9 @@ if __name__ == '__main__':
         chan.sendall('exit')
         print('exiting')
         bhSession.close()
+
+
+
+# примеры для windows:
+# cmd /C dir    - ls
+# ipconfig      - ip a
