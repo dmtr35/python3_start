@@ -32,10 +32,7 @@ def handler(chan, host, port):
         verbose("Forwarding request to %s:%d failed: %r" % (host, port, e))
         return
 
-    verbose(
-        "Connected!  Tunnel open %r -> %r -> %r"
-        % (chan.origin_addr, chan.getpeername(), (host, port))
-    )
+    verbose(f"Connected! Tunnel open {chan.origin_addr} -> {chan.getpeername()} -> {(host, port)}")
     while True:
         r, w, x = select.select([sock, chan], [], [])
         if sock in r:
@@ -156,7 +153,6 @@ def parse_options():
         help="remote host and port to forward to",
     )
     options, args = parser.parse_args()
-    print(len(args))
     if len(args) != 1:
         parser.error("Incorrect number of arguments.")
     if options.remote is None:
@@ -169,7 +165,6 @@ def parse_options():
 
 
 def main():
-    print(getpass.getuser())
     options, server, remote = parse_options()
 
     password = None
@@ -177,10 +172,12 @@ def main():
         password = getpass.getpass("Enter SSH password: ")
 
     client = paramiko.SSHClient()
-    client.load_system_host_keys()
-    client.set_missing_host_key_policy(paramiko.WarningPolicy())
+    # client.load_system_host_keys()
+    # client.set_missing_host_key_policy(paramiko.WarningPolicy())
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
     verbose(f"Connecting to ssh host {server[0]}:{server[1]} ...")
+    print(server[0], server[1], options.user, options.keyfile, options.look_for_keys, password)
     try:
         client.connect(
             server[0],
