@@ -29,7 +29,7 @@ def handler(chan, host, port):
     try:
         sock.connect((host, port))
     except Exception as e:
-        verbose("Forwarding request to %s:%d failed: %r" % (host, port, e))
+        verbose(f"Forwarding request to {host}:{port} failed: {e}")
         return
 
     verbose(f"Connected! Tunnel open {chan.origin_addr} -> {chan.getpeername()} -> {(host, port)}")
@@ -47,7 +47,7 @@ def handler(chan, host, port):
             sock.send(data)
     chan.close()
     sock.close()
-    verbose("Tunnel closed from %r" % (chan.origin_addr,))
+    verbose(f"Tunnel closed from {(chan.origin_addr,)}")
 
 
 def reverse_forward_tunnel(server_port, remote_host, remote_port, transport):
