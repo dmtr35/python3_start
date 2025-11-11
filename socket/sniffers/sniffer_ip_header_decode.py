@@ -44,7 +44,11 @@ class ICMP:
     def __init__(self, buff):
         header = struct.unpack('<BBHHH', buff)
 
-        self
+        self.type = header[0]
+        self.code = header[1]
+        self.sum = header[2]
+        self.id = header[3]
+        self.seq = header[4]
 
 def sniff(host):
     if os.name == 'nt':
@@ -66,7 +70,18 @@ def sniff(host):
             # создаем IP-заголовок из первых 20 байт
             ip_header = IP(raw_buffer[0:20])
             # выводим обнаруженные протокол и адреса
-            print(f'Protocol: {ip_header.protocol} {ip_header.src_address} -> {ip_header.dst_address}')
+            #print(f'Protocol: {ip_header.protocol} {ip_header.src_address} -> {ip_header.dst_address}')
+            if ip_header.protocol == "ICMP":
+                print(f'Protocol: {ip_header.protocol} {ip_header.src_address} -> {ip_header.dst_address}')
+                # print(f'Version: {ip_header.ver}')
+                # print(f'Header Length: {ip_header.ihl} TTL: {ip_header.ttl}')
+
+                # определяем, где нечинается ICMP-пакет
+                offset = ip_header.ihl * 4
+                buf = raw_buffer[offset:offset + 8]
+                # создаем структуру ICMP
+                icmp_header = ICMP(buf)
+                print(f'ICMP -> Type: {icmp_header.type} Code: {icmp_header.code}\n')
     except KeyboardInterrupt:
         # если мы в Windows, выключаем неизбирательный режим
         if os.name == 'nt':
