@@ -14,7 +14,7 @@ class IP:
         # 128 XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
         # 160 XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
 
-        self.ver = header[0] 
+        self.ver = header[0] >> 4
         self.ihl = header[0] & 0xF
 
         self.tos = header[1]

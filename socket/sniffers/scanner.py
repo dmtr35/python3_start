@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import ipaddress
 import os
 import socket
@@ -7,7 +9,7 @@ import threading
 import time
 
 # сканируемая подсеть
-SUBNET = '192.168.1.0/24'
+SUBNET = '192.168.2.0/24'
 # волшебная строка, которую мы будем искать в ICMP-ответах
 MESSAGE = 'PYTHONRULES!'
 
@@ -15,7 +17,7 @@ class IP:
     def __init__(self, buff=None):
         header = struct.unpack('<BBHHHBBH4s4s', buff)
 
-        self.ver = header[0] 
+        self.ver = header[0] >> 4
         self.ihl = header[0] & 0xF
 
         self.tos = header[1]
@@ -50,10 +52,12 @@ class ICMP:
         self.id = header[3]
         self.seq = header[4]
 
-# эта функция добавляет в UDP-датаграммы наше волшебное сообщение
+# та функция добавляет в UDP-датаграммы наше волшебное сообщение
+# Проходим по всем IP в подсети
 def udp_sender():
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sender:
         for ip in ipaddress.ip_network(SUBNET).hosts():
+            # print(str(ip))
             sender.sendto(bytes(MESSAGE, 'utf-8'), (str(ip), 65212))
 
 class Scanner:
@@ -72,7 +76,7 @@ class Scanner:
 
     def sniff(self):
         hosts_up = set([f'{str(self.host)} *'])
-        
+        print(hosts_up)
         try:
             while True:
                 # читаем пакет
@@ -110,7 +114,8 @@ if __name__ == "__main__":
     else:
         host = '192.168.2.100'
     s = Scanner(host)
-    time.sleep(5)
+    time.sleep(2)
     t = threading.Thread(target=udp_sender)
     t.start()
     s.sniff()
+
