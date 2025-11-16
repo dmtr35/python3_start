@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# только для liunx в windosw не работает потому что Windows не отдаёт ICMP Type 3 Code 3 в raw socket 
+
 import ipaddress
 import os
 import socket
