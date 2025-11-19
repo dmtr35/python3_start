@@ -2,3 +2,4 @@
 .vscode
 test-ignore
 test-ignore.py
+.gitfilter
